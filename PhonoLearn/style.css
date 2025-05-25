@@ -1,0 +1,484 @@
+/* Reset & base */
+* {
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: #f0f8ff;
+    color: #333;
+    line-height: 1.6;
+    padding: 0 1rem;
+    text-align: center;
+}
+h1, h2 {
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #2e5c6e;
+}
+
+/* Header & Nav */
+header {
+    background: linear-gradient(90deg, #4fc3f7, #81d4fa);
+    color: #fff;
+    padding: 1rem 1rem; /* Adjusted padding to match nav's horizontal padding */
+    border-bottom: 4px solid #388e3c; /* Green border */
+    position: relative;
+    display: flex; /* Make header a flex container */
+    align-items: center; /* Vertically align items in the center */
+    justify-content: space-between; /* Distribute space between items */
+}
+header h1 {
+    margin: 0; /* Remove default margin to allow flex to control spacing */
+    flex-grow: 1; /* Allow h1 to take available space */
+    text-align: center; /* Keep the title centered */
+}
+nav {
+    display: flex;
+    justify-content: flex-start; /* Aligned to the left, but now within the flex header */
+    padding: 0; /* Remove padding as header now handles it */
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    gap: 10px; /* Space between buttons */
+    flex-shrink: 0; /* Prevent nav from shrinking */
+}
+.nav-btn {
+    background: #aed581;
+    border: none;
+    color: #1b5e20;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    font-size: 1rem; /* Standard font size for text buttons */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Specific style for home button icon */
+.nav-btn.home-icon-btn {
+    font-size: 1.5rem; /* Larger font size for icon */
+    line-height: 1; /* Adjust line height to center icon */
+    padding: 0.6rem 1.2rem; /* Keep padding consistent */
+}
+.nav-btn.home-icon-btn svg {
+    width: 24px; /* Set SVG width */
+    height: 24px; /* Set SVG height */
+    fill: currentColor; /* Inherit color from parent button */
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background: #81c784;
+    color: #004d40;
+}
+
+/* Sections */
+.section {
+    display: none;
+    padding: 2rem 0;
+}
+.section.active {
+    display: block;
+}
+
+/* Consonant categories */
+.consonant-category, .vowel-category {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+.consonant-category h3, .vowel-category h3 {
+    color: #2e5c6e;
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.info-icon {
+    width: 20px;
+    height: 20px;
+    fill: #2e5c6e;
+    transition: fill 0.3s ease;
+}
+
+.consonant-category h3:hover .info-icon, .vowel-category h3:hover .info-icon {
+    fill: #1a4b5a;
+}
+
+.category-description {
+    background-color: #e0f7fa;
+    border: 1px solid #81d4fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: #006064;
+    text-align: center;
+    line-height: 1.4;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Cards container horizontal with wrap */
+.category-cards {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.5rem 0;
+}
+
+/* Card Styles */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 1rem;
+    width: 160px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 160px;
+}
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.phoneme-symbol {
+    font-family: 'Charis SIL', serif;
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: #1976d2;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+.phoneme-symbol:hover {
+    color: #1a73e8;
+    transform: scale(1.05);
+}
+
+.phoneme-symbol .sound-icon {
+    width: 20px;
+    height: 20px;
+    fill: #1976d2;
+    cursor: pointer;
+    transition: fill 0.3s ease;
+}
+
+.phoneme-symbol:hover .sound-icon {
+    fill: #1a73e8;
+}
+
+
+.phoneme-example {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #388e3c;
+    line-height: 1.2;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Style for clickable example words and their phonetic transcription */
+.example-word-clickable {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    padding: 2px 0;
+    transition: color 0.2s ease, transform 0.1s ease;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.example-word-clickable:hover {
+    color: #1a73e8;
+    transform: scale(1.05);
+}
+
+.example-word-text {
+    white-space: nowrap;
+}
+
+.phonetic-transcription {
+    font-family: 'Charis SIL', serif;
+    font-size: 0.8em;
+    color: #607d8b;
+    white-space: nowrap;
+}
+
+/* Strong tag for highlighting within example words (underline, inherit color) */
+.example-word-text strong {
+    font-weight: inherit; /* Keep original font weight */
+    color: inherit; /* Keep original color (green from .phoneme-example) */
+    text-decoration: underline; /* Add underline */
+}
+
+/* Strong tag for highlighting within phonetic transcription (bold, black, no underline) */
+.phonetic-transcription strong {
+    font-weight: 900; /* Make it extra bold */
+    color: #000000; /* Changed color to black */
+    text-decoration: none; /* Ensure no underline */
+}
+
+
+/* Quiz Styles */
+#quiz-container {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+#quiz-level-select p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #2e5c6e;
+}
+.quiz-level-btn {
+    background: #3b82f6;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    margin: 0 0.5rem 1rem 0.5rem;
+    color: white;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1.1rem;
+}
+.quiz-level-btn:hover {
+    background: #2563eb;
+}
+#answer-options {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+.answer-btn {
+    background: #e0f2f1;
+    border: 2px solid #3b82f6;
+    padding: 0.8rem 1.2rem;
+    border-radius: 12px;
+    min-width: 140px;
+    font-weight: 700;
+    color: #1e40af;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.answer-btn:hover:not(.correct):not(.wrong) {
+    background: #bbdefb;
+}
+.answer-btn.correct {
+    background: #90caf9;
+    border-color: #1e40af;
+    color: #0c3c91;
+}
+.answer-btn.wrong {
+    background: #f87171;
+    border-color: #b91c1c;
+    color: #6b1212;
+}
+#next-question-btn, #restart-quiz-btn {
+    background: #3b82f6;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 0.8rem 2rem;
+    margin-top: 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+#next-question-btn:hover, #restart-quiz-btn:hover {
+    background: #2563eb;
+}
+.hidden {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .card {
+        width: 120px;
+        padding: 0.8rem;
+        min-height: 140px;
+    }
+    .phoneme-symbol {
+        font-size: 2rem;
+    }
+    .nav-btn {
+        padding: 0.5rem 1rem;
+    }
+    .nav-btn.home-icon-btn svg {
+        width: 20px;
+        height: 20px;
+    }
+    .phoneme-example {
+        font-size: 0.75rem;
+    }
+    .phonetic-transcription {
+        font-size: 0.7em;
+    }
+    .example-word-clickable {
+        flex-direction: column;
+        align-items: center;
+        gap: 0px;
+    }
+}
+.home-buttons {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column; /* Arrange buttons vertically */
+    align-items: center; /* Center buttons horizontally */
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
+    width: 200px; /* Set a fixed width for consistency */
+}
+
+.btn-primary:hover {
+    background-color: #388e3c;
+}
+.navigation-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.next-section-btn, .prev-section-btn {
+    background-color: #3b82f6;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.next-section-btn:hover, .prev-section-btn:hover {
+    background: #2563eb;
+}
+
+/* Styles for Quiz Review Section */
+#quiz-review {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#quiz-review h3 {
+    text-align: center;
+    color: #2e5c6e;
+    margin-bottom: 1.5rem;
+}
+
+.review-item {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.review-item p {
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.review-item .question-text {
+    font-weight: 700;
+    color: #1a73e8;
+}
+
+.review-item .your-answer {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+.review-item .correct-answer {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.review-item .explanation {
+    font-style: italic;
+    color: #555;
+    margin-top: 0.8rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed #eee;
+}
+
+.review-buttons {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+/* New styles for immediate feedback */
+#current-question-feedback {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: left;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#current-question-feedback.correct-feedback {
+    background-color: #e8f5e9;
+    border: 1px solid #a5d6a7;
+}
+
+#current-question-feedback.incorrect-feedback {
+    background-color: #ffebee;
+    border: 1px solid #ef9a9a;
+}
+
+#current-question-feedback .feedback-title {
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+#current-question-feedback.correct-feedback .feedback-title {
+    color: #2e7d32;
+}
+
+#current-question-feedback.incorrect-feedback .feedback-title {
+    color: #d32f2f;
+}
+
+#current-question-feedback .feedback-text {
+    color: #424242;
+}

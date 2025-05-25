@@ -1,0 +1,1826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhonoLearn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS&family=Segoe+UI&family=Tahoma&family=Geneva&family=Verdana&family=Charis+SIL&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & base */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Comic Sans MS', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: #f0f8ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 0 1rem;
+            text-align: center;
+        }
+        h1, h2 {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #2e5c6e;
+        }
+
+        /* Header & Nav */
+        header {
+            background: linear-gradient(90deg, #4fc3f7, #81d4fa);
+            color: #fff;
+            padding: 1rem 1rem; /* Adjusted padding to match nav's horizontal padding */
+            border-bottom: 4px solid #388e3c; /* Green border */
+            position: relative;
+            display: flex; /* Make header a flex container */
+            align-items: center; /* Vertically align items in the center */
+            justify-content: space-between; /* Distribute space between items */
+        }
+        header h1 {
+            margin: 0; /* Remove default margin to allow flex to control spacing */
+            flex-grow: 1; /* Allow h1 to take available space */
+            text-align: center; /* Keep the title centered */
+        }
+        nav {
+            display: flex;
+            justify-content: flex-start; /* Aligned to the left, but now within the flex header */
+            padding: 0; /* Remove padding as header now handles it */
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+            gap: 10px; /* Space between buttons */
+            flex-shrink: 0; /* Prevent nav from shrinking */
+        }
+        .nav-btn {
+            background: #aed581;
+            border: none;
+            color: #1b5e20;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            font-size: 1rem; /* Standard font size for text buttons */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Specific style for home button icon */
+        .nav-btn.home-icon-btn {
+            font-size: 1.5rem; /* Larger font size for icon */
+            line-height: 1; /* Adjust line height to center icon */
+            padding: 0.6rem 1.2rem; /* Keep padding consistent */
+        }
+        .nav-btn.home-icon-btn svg {
+            width: 24px; /* Set SVG width */
+            height: 24px; /* Set SVG height */
+            fill: currentColor; /* Inherit color from parent button */
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: #81c784;
+            color: #004d40;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            padding: 2rem 0;
+        }
+        .section.active {
+            display: block;
+        }
+
+        /* Consonant categories */
+        .consonant-category, .vowel-category {
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        .consonant-category h3, .vowel-category h3 {
+            color: #2e5c6e;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .info-icon {
+            width: 20px;
+            height: 20px;
+            fill: #2e5c6e;
+            transition: fill 0.3s ease;
+        }
+
+        .consonant-category h3:hover .info-icon, .vowel-category h3:hover .info-icon {
+            fill: #1a4b5a;
+        }
+
+        .category-description {
+            background-color: #e0f7fa;
+            border: 1px solid #81d4fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+            color: #006064;
+            text-align: center;
+            line-height: 1.4;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Cards container horizontal with wrap */
+        .category-cards {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 0.5rem 0;
+        }
+
+        /* Card Styles */
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 1rem;
+            width: 160px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 160px;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+
+        .phoneme-symbol {
+            font-family: 'Charis SIL', serif;
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            color: #1976d2;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .phoneme-symbol:hover {
+            color: #1a73e8;
+            transform: scale(1.05);
+        }
+
+        .phoneme-symbol .sound-icon {
+            width: 20px;
+            height: 20px;
+            fill: #1976d2;
+            cursor: pointer;
+            transition: fill 0.3s ease;
+        }
+
+        .phoneme-symbol:hover .sound-icon {
+            fill: #1a73e8;
+        }
+
+
+        .phoneme-example {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #388e3c;
+            line-height: 1.2;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Style for clickable example words and their phonetic transcription */
+        .example-word-clickable {
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            padding: 2px 0;
+            transition: color 0.2s ease, transform 0.1s ease;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .example-word-clickable:hover {
+            color: #1a73e8;
+            transform: scale(1.05);
+        }
+
+        .example-word-text {
+            white-space: nowrap;
+        }
+
+        .phonetic-transcription {
+            font-family: 'Charis SIL', serif;
+            font-size: 0.8em;
+            color: #607d8b;
+            white-space: nowrap;
+        }
+
+        /* Strong tag for highlighting within example words (underline, inherit color) */
+        .example-word-text strong {
+            font-weight: inherit; /* Keep original font weight */
+            color: inherit; /* Keep original color (green from .phoneme-example) */
+            text-decoration: underline; /* Add underline */
+        }
+
+        /* Strong tag for highlighting within phonetic transcription (bold, black, no underline) */
+        .phonetic-transcription strong {
+            font-weight: 900; /* Make it extra bold */
+            color: #000000; /* Changed color to black */
+            text-decoration: none; /* Ensure no underline */
+        }
+
+
+        /* Quiz Styles */
+        #quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        #quiz-level-select p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #2e5c6e;
+        }
+        .quiz-level-btn {
+            background: #3b82f6;
+            border: none;
+            padding: 0.8rem 1.8rem;
+            margin: 0 0.5rem 1rem 0.5rem;
+            color: white;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 1.1rem;
+        }
+        .quiz-level-btn:hover {
+            background: #2563eb;
+        }
+        #answer-options {
+            margin-top: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .answer-btn {
+            background: #e0f2f1;
+            border: 2px solid #3b82f6;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            min-width: 140px;
+            font-weight: 700;
+            color: #1e40af;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .answer-btn:hover:not(.correct):not(.wrong) {
+            background: #bbdefb;
+        }
+        .answer-btn.correct {
+            background: #90caf9;
+            border-color: #1e40af;
+            color: #0c3c91;
+        }
+        .answer-btn.wrong {
+            background: #f87171;
+            border-color: #b91c1c;
+            color: #6b1212;
+        }
+        #next-question-btn, #restart-quiz-btn {
+            background: #3b82f6;
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 0.8rem 2rem;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        #next-question-btn:hover, #restart-quiz-btn:hover {
+            background: #2563eb;
+        }
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card {
+                width: 120px;
+                padding: 0.8rem;
+                min-height: 140px;
+            }
+            .phoneme-symbol {
+                font-size: 2rem;
+            }
+            .nav-btn {
+                padding: 0.5rem 1rem;
+            }
+            .nav-btn.home-icon-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+            .phoneme-example {
+                font-size: 0.75rem;
+            }
+            .phonetic-transcription {
+                font-size: 0.7em;
+            }
+            .example-word-clickable {
+                flex-direction: column;
+                align-items: center;
+                gap: 0px;
+            }
+        }
+        .home-buttons {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column; /* Arrange buttons vertically */
+            align-items: center; /* Center buttons horizontally */
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background-color: #4caf50;
+            border: none;
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+            width: 200px; /* Set a fixed width for consistency */
+        }
+
+        .btn-primary:hover {
+            background-color: #388e3c;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .next-section-btn, .prev-section-btn {
+            background-color: #3b82f6;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .next-section-btn:hover, .prev-section-btn:hover {
+            background: #2563eb;
+        }
+
+        /* Styles for Quiz Review Section */
+        #quiz-review {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: left;
+            padding: 1.5rem;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        #quiz-review h3 {
+            text-align: center;
+            color: #2e5c6e;
+            margin-bottom: 1.5rem;
+        }
+
+        .review-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .review-item p {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .review-item .question-text {
+            font-weight: 700;
+            color: #1a73e8;
+        }
+
+        .review-item .your-answer {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .review-item .correct-answer {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .review-item .explanation {
+            font-style: italic;
+            color: #555;
+            margin-top: 0.8rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed #eee;
+        }
+
+        .review-buttons {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        /* New styles for immediate feedback */
+        #current-question-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        #current-question-feedback.correct-feedback {
+            background-color: #e8f5e9;
+            border: 1px solid #a5d6a7;
+        }
+
+        #current-question-feedback.incorrect-feedback {
+            background-color: #ffebee;
+            border: 1px solid #ef9a9a;
+        }
+
+        #current-question-feedback .feedback-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        #current-question-feedback.correct-feedback .feedback-title {
+            color: #2e7d32;
+        }
+
+        #current-question-feedback.incorrect-feedback .feedback-title {
+            color: #d32f2f;
+        }
+
+        #current-question-feedback .feedback-text {
+            color: #424242;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <button class="nav-btn home-icon-btn active" data-section="home" aria-label="Home">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+            </button>
+        </nav>
+        <h1>Phonetics Learning Application</h1>
+        <div></div>
+    </header>
+
+    <main>
+        <section id="home" class="section active">
+            <h2>Welcome!</h2>
+            <p>Explore the world of English phonetics. Learn consonants, vowels, and diphthongs, then test your knowledge with a quiz!</p>
+            <div class="home-buttons">
+                <button id="start-learning-btn" class="btn-primary">Start Learning</button>
+                <button id="start-quiz-btn" class="btn-primary">Start Quiz</button>
+            </div>
+        </section>
+
+        <section id="consonants" class="section">
+            <h2>Consonants</h2>
+            <div class="consonant-category">
+                <h3>Plosives
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </h3>
+                <div class="category-description hidden">
+                    Sounds made by completely blocking airflow and then releasing it suddenly (e.g., /p/, /b/).
+                </div>
+                <div class="category-cards">
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/p.mp3">/p/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>P</strong>en</span> <span class="phonetic-transcription">/<strong>p</strong>ɛn/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Spi<strong>n</strong></span> <span class="phonetic-transcription">/spɪ<strong>n</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Cu<strong>p</strong></span> <span class="phonetic-transcription">/kʌ<strong>p</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/b.mp3">/b/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>B</strong>at</span> <span class="phonetic-transcription">/<strong>b</strong>æt/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ro<strong>b</strong></span> <span class="phonetic-transcription">/rɒ<strong>b</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">La<strong>b</strong>or</span> <span class="phonetic-transcription">/ˈleɪ<strong>b</strong>ər/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/t.mp3">/t/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>T</strong>op</span> <span class="phonetic-transcription">/<strong>t</strong>ɒp/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">S<strong>t</strong>op</span> <span class="phonetic-transcription">/s<strong>t</strong>ɒp/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ca<strong>t</strong></span> <span class="phonetic-transcription">/kæ<strong>t</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/d.mp3">/d/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>D</strong>og</span> <span class="phonetic-transcription">/<strong>d</strong>ɒɡ/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Be<strong>d</strong></span> <span class="phonetic-transcription">/bɛ<strong>d</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ki<strong>d</strong></span> <span class="phonetic-transcription">/kɪ<strong>d</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/k.mp3">/k/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>C</strong>at</span> <span class="phonetic-transcription">/<strong>k</strong>æt/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">S<strong>k</strong>ip</span> <span class="phonetic-transcription">/s<strong>k</strong>ɪp/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ba<strong>ck</strong></span> <span class="phonetic-transcription">/bæ<strong>k</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/g.mp3">/g/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>G</strong>o</span> <span class="phonetic-transcription">/<strong>ɡ</strong>əʊ/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Bi<strong>g</strong></span> <span class="phonetic-transcription">/bɪ<strong>ɡ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Do<strong>g</strong></span> <span class="phonetic-transcription">/dɒ<strong>ɡ</strong>/</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consonant-category">
+                <h3>Fricatives
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </h3>
+                <div class="category-description hidden">
+                    Sounds made by forcing air through a narrow gap, creating friction (e.g., /f/, /s/).
+                </div>
+                <div class="category-cards">
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/f.mp3">/f/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>F</strong>an</span> <span class="phonetic-transcription">/<strong>f</strong>æn/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Li<strong>ft</strong></span> <span class="phonetic-transcription">/lɪ<strong>f</strong>t/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Rou<strong>gh</strong></span> <span class="phonetic-transcription">/rʌ<strong>f</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/v.mp3">/v/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>V</strong>an</span> <span class="phonetic-transcription">/<strong>v</strong>æn/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Lo<strong>v</strong>e</span> <span class="phonetic-transcription">/lʌ<strong>v</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Mo<strong>v</strong>e</span> <span class="phonetic-transcription">/muː<strong>v</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/th.mp3">/θ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>Th</strong>in</span> <span class="phonetic-transcription">/<strong>θ</strong>ɪn/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Pa<strong>th</strong></span> <span class="phonetic-transcription">/pɑː<strong>θ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Bir<strong>th</strong></span> <span class="phonetic-transcription">/bɜː<strong>θ</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/dh.mp3">/ð/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>Th</strong>is</span> <span class="phonetic-transcription">/<strong>ð</strong>ɪs/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Bro<strong>th</strong>er</span> <span class="phonetic-transcription">/ˈbrʌ<strong>ð</strong>ər/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Wi<strong>th</strong></span> <span class="phonetic-transcription">/wɪ<strong>ð</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/s.mp3">/s/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>S</strong>un</span> <span class="phonetic-transcription">/<strong>s</strong>ʌn/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Fa<strong>ce</strong></span> <span class="phonetic-transcription">/feɪ<strong>s</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ki<strong>ss</strong></span> <span class="phonetic-transcription">/kɪ<strong>s</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/z.mp3">/z/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>Z</strong>oo</span> <span class="phonetic-transcription">/<strong>z</strong>uː/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Bu<strong>zz</strong></span> <span class="phonetic-transcription">/bʌ<strong>z</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ea<strong>sy</strong></span> <span class="phonetic-transcription">/ˈiː<strong>z</strong>i/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/sh.mp3">/ʃ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>Sh</strong>e</span> <span class="phonetic-transcription">/<strong>ʃ</strong>iː/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Wa<strong>sh</strong></span> <span class="phonetic-transcription">/wɒ<strong>ʃ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Nati<strong>on</strong></span> <span class="phonetic-transcription">/ˈneɪ<strong>ʃ</strong>ən/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/zh.mp3">/ʒ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">Mea<strong>s</strong>ure</span> <span class="phonetic-transcription">/ˈmɛ<strong>ʒ</strong>ər/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Vi<strong>si</strong>on</span> <span class="phonetic-transcription">/ˈvɪ<strong>ʒ</strong>ən/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Gara<strong>ge</strong></span> <span class="phonetic-transcription">/ˈɡærɑː<strong>ʒ</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/h.mp3">/h/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>H</strong>at</span> <span class="phonetic-transcription">/<strong>h</strong>æt/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Be<strong>h</strong>ind</span> <span class="phonetic-transcription">/bɪˈ<strong>h</strong>aɪnd/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">W<strong>h</strong>o</span> <span class="phonetic-transcription">/<strong>h</strong>uː/</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consonant-category">
+                <h3>Affricates
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </h3>
+                <div class="category-description hidden">
+                    A combination of a plosive and a fricative, starting with a block and ending with a release through a narrow gap (e.g., /tʃ/, /dʒ/).
+                </div>
+                <div class="category-cards">
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/tch.mp3">/tʃ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>Ch</strong>air</span> <span class="phonetic-transcription">/<strong>tʃ</strong>ɛər/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Wa<strong>tch</strong></span> <span class="phonetic-transcription">/wɒ<strong>tʃ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Fu<strong>tu</strong>re</span> <span class="phonetic-transcription">/ˈfjuː<strong>tʃ</strong>ər/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/dj.mp3">/dʒ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>J</strong>ump</span> <span class="phonetic-transcription">/<strong>dʒ</strong>ʌmp/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ba<strong>dge</strong></span> <span class="phonetic-transcription">/bæ<strong>dʒ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Sol<strong>dier</strong></span> <span class="phonetic-transcription">/ˈsəʊl<strong>dʒ</strong>ər/</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consonant-category">
+                <h3>Nasals
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </h3>
+                <div class="category-description hidden">
+                    Sounds where airflow is blocked in the mouth but released through the nose (e.g., /m/, /n/).
+                </div>
+                <div class="category-cards">
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/m.mp3">/m/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>M</strong>an</span> <span class="phonetic-transcription">/<strong>m</strong>æn/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Dru<strong>m</strong></span> <span class="phonetic-transcription">/drʌ<strong>m</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Co<strong>m</strong>e</span> <span class="phonetic-transcription">/kʌ<strong>m</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/n.mp3">/n/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>N</strong>o</span> <span class="phonetic-transcription">/<strong>n</strong>əʊ/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Su<strong>n</strong></span> <span class="phonetic-transcription">/sʌ<strong>n</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ru<strong>n</strong></span> <span class="phonetic-transcription">/rʌ<strong>n</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/ng.mp3">/ŋ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">Si<strong>ng</strong></span> <span class="phonetic-transcription">/sɪ<strong>ŋ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Thi<strong>ng</strong></span> <span class="phonetic-transcription">/θɪ<strong>ŋ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Lo<strong>ng</strong></span> <span class="phonetic-transcription">/lɒ<strong>ŋ</strong>/</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="consonant-category">
+                <h3>Approximants
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </h3>
+                <div class="category-description hidden">
+                    Sounds where articulators come close but don't create significant friction; airflow is relatively free (e.g., /l/, /r/).
+                </div>
+                <div class="category-cards">
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/l.mp3">/l/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>L</strong>eg</span> <span class="phonetic-transcription">/<strong>l</strong>ɛɡ/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Be<strong>ll</strong></span> <span class="phonetic-transcription">/bɛ<strong>l</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Fami<strong>ly</strong></span> <span class="phonetic-transcription">/ˈfæmə<strong>l</strong>i/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/r.mp3">/r/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>R</strong>ed</span> <span class="phonetic-transcription">/<strong>r</strong>ɛd/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Ca<strong>rr</strong>y</span> <span class="phonetic-transcription">/ˈkæ<strong>r</strong>i/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">St<strong>r</strong>eet</span> <span class="phonetic-transcription">/st<strong>r</strong>iːt/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/w.mp3">/w/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>W</strong>et</span> <span class="phonetic-transcription">/<strong>w</strong>ɛt/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">A<strong>w</strong>ay</span> <span class="phonetic-transcription">/əˈ<strong>w</strong>eɪ/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>Qu</strong>een</span> <span class="phonetic-transcription">/<strong>kw</strong>iːn/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/j.mp3">/j/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>Y</strong>es</span> <span class="phonetic-transcription">/<strong>j</strong>ɛs/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">On<strong>i</strong>on</span> <span class="phonetic-transcription">/ˈʌn<strong>j</strong>ən/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>Y</strong>ou</span> <span class="phonetic-transcription">/<strong>j</strong>uː/</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="next-section-btn" data-next="vowels">Continue to Vowels</button>
+            </div>
+        </section>
+
+        <section id="vowels" class="section">
+            <h2>Vowels</h2>
+            <div class="vowel-category">
+                <h3>Short Vowels
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </h3>
+                <div class="category-description hidden">
+                    Vowel sounds produced with a relatively short duration, without significant tongue movement (e.g., /ɪ/, /e/).
+                </div>
+                <div class="category-cards">
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/i_short.mp3">/ɪ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">S<strong>i</strong>t</span> <span class="phonetic-transcription">/s<strong>ɪ</strong>t/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">P<strong>i</strong>g</span> <span class="phonetic-transcription">/p<strong>ɪ</strong>ɡ/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">K<strong>i</strong>ng</span> <span class="phonetic-transcription">/k<strong>ɪ</strong>ŋ/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/e_short.mp3">/e/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">B<strong>e</strong>d</span> <span class="phonetic-transcription">/b<strong>ɛ</strong>d/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">M<strong>e</strong>n</span> <span class="phonetic-transcription">/m<strong>ɛ</strong>n/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">H<strong>ea</strong>d</span> <span class="phonetic-transcription">/h<strong>ɛ</strong>d/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/ae.mp3">/æ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">C<strong>a</strong>t</span> <span class="phonetic-transcription">/k<strong>æ</strong>t/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">M<strong>a</strong>p</span> <span class="phonetic-transcription">/m<strong>æ</strong>p/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">H<strong>a</strong>nd</span> <span class="phonetic-transcription">/h<strong>æ</strong>nd/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/a_short.mp3">/ʌ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">C<strong>u</strong>p</span> <span class="phonetic-transcription">/k<strong>ʌ</strong>p/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">B<strong>u</strong>t</span> <span class="phonetic-transcription">/b<strong>ʌ</strong>t/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">L<strong>o</strong>ve</span> <span class="phonetic-transcription">/l<strong>ʌ</strong>v/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/o_short.mp3">/ɒ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">H<strong>o</strong>t</span> <span class="phonetic-transcription">/h<strong>ɒ</strong>t/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">D<strong>o</strong>g</span> <span class="phonetic-transcription">/d<strong>ɒ</strong>ɡ/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">W<strong>a</strong>tch</span> <span class="phonetic-transcription">/w<strong>ɒ</strong>tʃ/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/u_short.mp3">/ʊ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">P<strong>u</strong>t</span> <span class="phonetic-transcription">/p<strong>ʊ</strong>t/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">B<strong>oo</strong>k</span> <span class="phonetic-transcription">/b<strong>ʊ</strong>k/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">C<strong>oul</strong>d</span> <span class="phonetic-transcription">/k<strong>ʊ</strong>d/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/schwa.mp3">/ə/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text"><strong>A</strong>bout</span> <span class="phonetic-transcription">/<strong>ə</strong>ˈbaʊt/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Teach<strong>er</strong></span> <span class="phonetic-transcription">/ˈtiːtʃ<strong>ə</strong>r/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Comm<strong>a</strong></span> <span class="phonetic-transcription">/ˈkɒm<strong>ə</strong>/</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vowel-category">
+                <h3>Long Vowels
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </h3>
+                <div class="category-description hidden">
+                    Vowel sounds produced with a longer duration (e.g., /iː/, /ɑː/).
+                </div>
+                <div class="category-cards">
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/i_long.mp3">/iː/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">Sh<strong>ee</strong>p</span> <span class="phonetic-transcription">/ʃ<strong>iː</strong>p/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">F<strong>ee</strong>t</span> <span class="phonetic-transcription">/f<strong>iː</strong>t/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">S<strong>ea</strong></span> <span class="phonetic-transcription">/s<strong>iː</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/er.mp3">/ɜː/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">B<strong>ir</strong>d</span> <span class="phonetic-transcription">/b<strong>ɜː</strong>d/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">G<strong>ir</strong>l</span> <span class="phonetic-transcription">/ɡ<strong>ɜː</strong>l/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">W<strong>or</strong>k</span> <span class="phonetic-transcription">/w<strong>ɜː</strong>k/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/ah_long.mp3">/ɑː/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">C<strong>ar</strong></span> <span class="phonetic-transcription">/k<strong>ɑː</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">F<strong>a</strong>ther</span> <span class="phonetic-transcription">/ˈf<strong>ɑː</strong>ðər/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">St<strong>art</strong></span> <span class="phonetic-transcription">/st<strong>ɑː</strong>t/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/or.mp3">/ɔː/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">D<strong>oor</strong></span> <span class="phonetic-transcription">/d<strong>ɔː</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">F<strong>our</strong></span> <span class="phonetic-transcription">/f<strong>ɔː</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">B<strong>all</strong></span> <span class="phonetic-transcription">/b<strong>ɔː</strong>l/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/u_long.mp3">/uː/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">Bl<strong>ue</strong></span> <span class="phonetic-transcription">/bl<strong>uː</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">M<strong>oo</strong>n</span> <span class="phonetic-transcription">/m<strong>uː</strong>n/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Gr<strong>ew</strong></span> <span class="phonetic-transcription">/ɡr<strong>uː</strong>/</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="prev-section-btn" data-prev="consonants">Previous Section</button>
+                <button class="next-section-btn" data-next="diphthongs">Continue to Diphthongs</button>
+            </div>
+        </section>
+
+        <section id="diphthongs" class="section">
+            <h2>Diphthongs</h2>
+            <div class="vowel-category">
+                <h3>Diphthongs
+                    <svg class="info-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                    </svg>
+                </h3>
+                <div class="category-description hidden">
+                    Vowel sounds that involve a glide from one vowel position to another within a single syllable (e.g., /eɪ/, /aɪ/).
+                </div>
+                <div class="category-cards">
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/ei.mp3">/eɪ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">F<strong>ace</strong></span> <span class="phonetic-transcription">/f<strong>eɪ</strong>s/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">D<strong>ay</strong></span> <span class="phonetic-transcription">/d<strong>eɪ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Gr<strong>eat</strong></span> <span class="phonetic-transcription">/ɡr<strong>eɪ</strong>t/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/ai.mp3">/aɪ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">M<strong>y</strong></span> <span class="phonetic-transcription">/m<strong>aɪ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">T<strong>ime</strong></span> <span class="phonetic-transcription">/t<strong>aɪ</strong>m/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">B<strong>uy</strong></span> <span class="phonetic-transcription">/b<strong>aɪ</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/oi.mp3">/ɔɪ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">B<strong>oy</strong></span> <span class="phonetic-transcription">/b<strong>ɔɪ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">J<strong>oy</strong></span> <span class="phonetic-transcription">/dʒ<strong>ɔɪ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">C<strong>oin</strong></span> <span class="phonetic-transcription">/k<strong>ɔɪ</strong>n/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/ou.mp3">/əʊ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">G<strong>o</strong></span> <span class="phonetic-transcription">/ɡ<strong>əʊ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">N<strong>o</strong></span> <span class="phonetic-transcription">/n<strong>əʊ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Sh<strong>ow</strong></span> <span class="phonetic-transcription">/ʃ<strong>əʊ</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/au.mp3">/aʊ/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">N<strong>ow</strong></span> <span class="phonetic-transcription">/n<strong>aʊ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">H<strong>ow</strong></span> <span class="phonetic-transcription">/h<strong>aʊ</strong>/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">C<strong>ow</strong></span> <span class="phonetic-transcription">/k<strong>aʊ</strong>/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/ie.mp3">/ɪə/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">N<strong>ear</strong></span> <span class="phonetic-transcription">/n<strong>ɪə</strong>r/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">H<strong>ere</strong></span> <span class="phonetic-transcription">/h<strong>ɪə</strong>r/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">D<strong>ear</strong></span> <span class="phonetic-transcription">/d<strong>ɪə</strong>r/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/ea.mp3">/eə/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">H<strong>air</strong></span> <span class="phonetic-transcription">/h<strong>eə</strong>r/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">C<strong>are</strong></span> <span class="phonetic-transcription">/k<strong>eə</strong>r/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">Th<strong>ere</strong></span> <span class="phonetic-transcription">/ð<strong>eə</strong>r/</span></span>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="phoneme-symbol" data-audio="audio/u_diphthong.mp3">/ʊə/
+                            <svg class="sound-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.98 7-4.66 7-8.77s-2.99-7.79-7-8.77z"/>
+                            </svg>
+                        </div>
+                        <div class="phoneme-example">
+                            <span class="example-word-clickable"><span class="example-word-text">T<strong>our</strong></span> <span class="phonetic-transcription">/t<strong>ʊə</strong>r/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">P<strong>oor</strong></span> <span class="phonetic-transcription">/p<strong>ʊə</strong>r/</span></span>
+                            <span class="example-word-clickable"><span class="example-word-text">S<strong>ure</strong></span> <span class="phonetic-transcription">/ʃ<strong>ʊə</strong>r/</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="navigation-buttons">
+                <button class="prev-section-btn" data-prev="vowels">Previous Section</button>
+                <button class="next-section-btn" data-next="quiz">Start Quiz!</button>
+            </div>
+        </section>
+
+        <section id="quiz" class="section">
+            <h2>Test Your Knowledge!</h2>
+            <div id="quiz-container">
+                <div id="quiz-level-select">
+                    <p>Select a quiz level:</p>
+                    <button class="quiz-level-btn level-btn" data-level="1">Easy</button>
+                    <button class="quiz-level-btn level-btn" data-level="2">Medium</button>
+                    <button class="quiz-level-btn level-btn" data-level="3">Hard</button>
+                </div>
+
+                <div id="quiz-question" class="hidden">
+                    <h3 id="question-text">Question will appear here.</h3>
+                    <div id="answer-options">
+                        </div>
+                    <div id="current-question-feedback" class="hidden">
+                        <p class="feedback-title"></p>
+                        <p class="feedback-text"></p>
+                    </div>
+                    <button id="next-question-btn" class="hidden">Next Question</button>
+                </div>
+
+                <div id="quiz-result" class="hidden">
+                    <h3>Quiz Complete!</h3>
+                    <p id="score-text">You scored X out of Y.</p>
+                    <button id="review-quiz-btn" class="hidden">Review Incorrect Answers</button>
+                    <button id="restart-quiz-btn">Restart Quiz</button>
+                </div>
+
+                <div id="quiz-review" class="hidden">
+                    <h3>Review Your Answers</h3>
+                    <div id="review-list">
+                        </div>
+                    <div class="review-buttons">
+                        <button id="back-to-levels-from-review" class="btn-primary">Back to Levels</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Store the currently playing audio to stop it if another sound is triggered
+        let currentAudio = null;
+
+        // Function to play audio from a given source URL
+        function playAudio(audioSrc) {
+            if (!audioSrc) {
+                console.warn("No audio source provided.");
+                return;
+            }
+
+            // Stop any currently playing audio
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0; // Rewind to start
+            }
+
+            currentAudio = new Audio(audioSrc);
+            currentAudio.play().catch(e => console.error("Error playing audio:", e));
+        }
+
+        // Function to speak text using Web Speech API
+        function speakText(text) {
+            const synth = window.speechSynthesis;
+            if (synth) {
+                synth.cancel(); // Stop any ongoing speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US'; // Set language for better pronunciation
+                utterance.rate = 0.9; // Adjust speech rate if needed
+                utterance.pitch = 1; // Adjust pitch if needed
+                synth.speak(utterance);
+            } else {
+                console.warn("Web Speech API not supported in this browser.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // ====== Main navigation between sections ======
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.section');
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.dataset.section;
+                    sections.forEach(sec => sec.classList.toggle('active', sec.id === target));
+                    navButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            // ====== Start Learning and Start Quiz Buttons ======
+            const startLearningBtn = document.getElementById('start-learning-btn');
+            const startQuizBtn = document.getElementById('start-quiz-btn');
+            // Removed the IPA Converter button element and its event listener
+            // const startIpaConverterBtn = document.getElementById('start-ipa-converter-btn');
+
+            startLearningBtn?.addEventListener('click', () => {
+                navButtons.forEach(b => b.classList.remove('active'));
+                document.querySelector('button[data-section="consonants"]')?.classList.add('active');
+                document.getElementById('consonants')?.classList.add('active');
+                document.getElementById('home')?.classList.remove('active');
+            });
+
+            startQuizBtn?.addEventListener('click', () => {
+                navButtons.forEach(b => b.classList.remove('active'));
+                document.querySelector('button[data-section="quiz"]')?.classList.add('active');
+                document.getElementById('quiz')?.classList.add('active');
+                document.getElementById('home')?.classList.remove('active');
+
+                document.getElementById('quiz-level-select')?.classList.remove('hidden');
+                document.getElementById('quiz-question')?.classList.add('hidden');
+                document.getElementById('quiz-result')?.classList.add('hidden');
+                document.getElementById('quiz-review')?.classList.add('hidden');
+            });
+
+            // Removed the event listener for the IPA Converter button
+            /*
+            startIpaConverterBtn?.addEventListener('click', () => {
+                navButtons.forEach(b => b.classList.remove('active'));
+                document.getElementById('ipa-converter')?.classList.add('active');
+                document.getElementById('home')?.classList.remove('active');
+            });
+            */
+
+            // ====== Navigation Buttons (Next and Previous) ======
+            document.querySelectorAll('.next-section-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const nextSectionId = button.getAttribute('data-next');
+                    sections.forEach(section => section.classList.remove('active'));
+                    navButtons.forEach(b => b.classList.remove('active'));
+
+                    const nextSection = document.getElementById(nextSectionId);
+                    if (nextSection) {
+                        nextSection.classList.add('active');
+                        const correspondingNavBtn = document.querySelector(`.nav-btn[data-section="${nextSectionId}"]`);
+                        if (correspondingNavBtn) {
+                            correspondingNavBtn.classList.add('active');
+                        }
+                    }
+                });
+            });
+
+            document.querySelectorAll('.prev-section-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const prevSectionId = button.getAttribute('data-prev');
+                    sections.forEach(section => section.classList.remove('active'));
+                    navButtons.forEach(b => b.classList.remove('active'));
+
+                    const prevSection = document.getElementById(prevSectionId);
+                    if (prevSection) {
+                        prevSection.classList.add('active');
+                        const correspondingNavBtn = document.querySelector(`.nav-btn[data-section="${prevSectionId}"]`);
+                        if (correspondingNavBtn) {
+                            correspondingNavBtn.classList.add('active');
+                        }
+                    }
+                });
+            });
+
+            // ====== Shuffle array function ======
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+                }
+
+            // ====== Quiz Data per Level ======
+            const quizData = {
+                1: [ // Easy Level
+                    {
+                        question: "The phonetic symbol /p/ represents what type of sound?",
+                        answers: ["Vowel", "Consonant", "Diphthong", "Monophthong"],
+                        correct: 1,
+                        explanation: "The /p/ sound is a voiceless bilabial plosive, meaning it's a consonant produced by blocking airflow with both lips and then releasing it suddenly."
+                    },
+                    {
+                        question: "Which word contains the /t/ sound?",
+                        answers: ["Cat", "Dog", "Sun", "Run"],
+                        correct: 0,
+                        explanation: "The word 'Cat' contains the /t/ sound. It's a voiceless alveolar plosive."
+                    },
+                    {
+                        question: "What is the phonetic symbol for a high front vowel?",
+                        answers: ["/i/", "/u/", "/a/", "/e/"],
+                        correct: 0,
+                        explanation: "/i/ (as in 'sheep') is a high front vowel, meaning the tongue is high and towards the front of the mouth."
+                    },
+                    {
+                        question: "The /s/ sound is classified as what type of consonant?",
+                        answers: ["Affricate", "Nasal", "Fricative", "Plosive"],
+                        correct: 2,
+                        explanation: "The /s/ sound is a fricative, produced by forcing air through a narrow channel in the vocal tract, creating friction."
+                    },
+                    {
+                        question: "Which word contains the vowel sound /æ/?",
+                        answers: ["Cat", "Car", "Cut", "Cot"],
+                        correct: 0,
+                        explanation: "The word 'Cat' contains the /æ/ sound, which is a low front vowel."
+                    },
+                    {
+                        question: "What is the phonetic symbol for a high back vowel?",
+                        answers: ["/i/", "/u/", "/a/", "/e/"],
+                        correct: 1,
+                        explanation: "/u/ (as in 'moon') is a high back vowel, meaning the tongue is high and towards the back of the mouth."
+                    },
+                    {
+                        question: "Which is a voiceless plosive consonant?",
+                        answers: ["/b/", "/p/", "/d/", "/g/"],
+                        correct: 1,
+                        explanation: "/p/ is a voiceless plosive. The vocal cords do not vibrate when producing this sound."
+                    },
+                    {
+                        question: "The phonetic symbol /m/ represents which type of sound?",
+                        answers: ["Nasal", "Plosive", "Affricate", "Fricative"],
+                        correct: 0,
+                        explanation: "/m/ is a nasal sound, where air escapes through the nose."
+                    },
+                    {
+                        question: "Which of the following is a monophthong vowel sound?",
+                        answers: ["/aɪ/", "/eɪ/", "/ɪ/", "/aʊ/"],
+                        correct: 2,
+                        explanation: "/ɪ/ (as in 'sit') is a monophthong, a single vowel sound without a noticeable change in quality."
+                    },
+                    {
+                        question: "Which of the following is a diphthong vowel sound?",
+                        answers: ["/aɪ/", "/ɪ/", "/e/", "/u/"],
+                        correct: 0,
+                        explanation: "/aɪ/ (as in 'my') is a diphthong, a vowel sound that involves a glide from one vowel quality to another."
+                    }
+                ],
+                2: [ // Medium Level
+                    {
+                        question: "Labial consonants are produced with which part of the mouth?",
+                        answers: ["Tongue and palate", "Lips", "Throat", "Teeth"],
+                        correct: 1,
+                        explanation: "Labial consonants involve the use of the lips (e.g., /p/, /b/, /m/)."
+                    },
+                    {
+                        question: "The place of articulation for the /k/ sound is?",
+                        answers: ["Velar", "Alveolar", "Dental", "Glottal"],
+                        correct: 0,
+                        explanation: "The /k/ sound is a velar consonant, meaning it's produced by the back of the tongue touching the soft palate (velum)."
+                    },
+                    {
+                        question: "The /ʧ/ sound is classified as what?",
+                        answers: ["Affricate", "Plosive", "Nasal", "Fricative"],
+                        correct: 0,
+                        explanation: "/ʧ/ (as in 'chair') is an affricate, a combination of a plosive and a fricative sound."
+                    },
+                    {
+                        question: "The vowel /eɪ/ is classified as which type?",
+                        answers: ["Monophthong", "Diphthong", "Consonant", "Affricate"],
+                        correct: 1,
+                        explanation: "/eɪ/ (as in 'face') is a diphthong, a vowel sound that changes quality during its pronunciation."
+                    },
+                    {
+                        question: "The manner of articulation for the /f/ sound is?",
+                        answers: ["Plosive", "Fricative", "Nasal", "Affricate"],
+                        correct: 1,
+                        explanation: "/f/ is a fricative, produced by a continuous stream of air through a narrow opening."
+                    },
+                    {
+                        question: "The /ŋ/ sound is an example of which consonant type?",
+                        answers: ["Nasal", "Affricate", "Plosive", "Fricative"],
+                        correct: 0,
+                        explanation: "/ŋ/ (as in 'sing') is a nasal consonant, where air flows through the nasal cavity."
+                    },
+                    {
+                        question: "The low back vowel sound is represented by which symbol?",
+                        answers: ["/ɑː/", "/iː/", "/uː/", "/e/"],
+                        correct: 0,
+                        explanation: "/ɑː/ (as in 'car') is a low back vowel, with the tongue low and at the back of the mouth."
+                    },
+                    {
+                        question: "The phonetic symbol /ð/ represents which sound?",
+                        answers: ["Voiced dental", "Voiceless dental", "Affricate", "Plosive"],
+                        correct: 0,
+                        explanation: "/ð/ (as in 'this') is a voiced dental fricative, produced with the tongue against the teeth and vocal cord vibration."
+                    },
+                    {
+                        question: "Which of the following is a monophthong vowel?",
+                        answers: ["/ɪ/", "/aɪ/", "/eɪ/", "/aʊ/"],
+                        correct: 0,
+                        explanation: "/ɪ/ is a monophthong, a pure vowel sound."
+                    },
+                    {
+                        question: "The place of articulation for /t/ is?",
+                        answers: ["Alveolar", "Velar", "Glottal", "Labial"],
+                        correct: 0,
+                        explanation: "/t/ is an alveolar consonant, produced with the tongue touching the alveolar ridge (behind the front teeth)."
+                    }
+                ],
+                3: [ // Hard Level
+                    {
+                        question: "Which voiced velar plosive consonant is correct?",
+                        answers: ["/k/", "/g/", "/t/", "/d/"],
+                        correct: 1,
+                        explanation: "/g/ is a voiced velar plosive. 'Velar' refers to the back of the tongue touching the soft palate, and 'voiced' means vocal cords vibrate."
+                    },
+                    {
+                        question: "The /θ/ sound is an example of which consonant?",
+                        answers: ["Voiceless dental", "Voiced dental", "Nasal", "Affricate"],
+                        correct: 0,
+                        explanation: "/θ/ (as in 'thin') is a voiceless dental fricative. 'Voiceless' means no vocal cord vibration, and 'dental' means tongue against teeth."
+                    },
+                    {
+                        question: "In phonology, the process of removing sounds is called?",
+                        answers: ["Assimilation", "Elimination", "Elision", "Reduction"],
+                        correct: 2,
+                        explanation: "Elision is the omission of a sound or syllable in speech (e.g., 'camera' often pronounced without the middle 'e')."
+                    },
+                    {
+                        question: "Sounds produced with vibrating vocal cords are called?",
+                        answers: ["Voiced", "Voiceless", "Plosive", "Affricate"],
+                        correct: 0,
+                        explanation: "Voiced sounds are those where the vocal cords vibrate during their production."
+                    },
+                    {
+                        question: "Consonants produced with partial obstruction of airflow are called?",
+                        answers: ["Fricatives", "Plosives", "Nasals", "Affricates"],
+                        correct: 0,
+                        explanation: "Fricatives involve a partial obstruction, creating turbulent airflow and a 'hissing' sound."
+                    },
+                    {
+                        question: "The IPA symbol /ʃ/ represents which sound?",
+                        answers: ["Voiceless postalveolar fricative", "Voiced affricate", "Plosive", "Nasal"],
+                        correct: 0,
+                        explanation: "/ʃ/ (as in 'she') is a voiceless postalveolar fricative, produced behind the alveolar ridge without vocal cord vibration."
+                    },
+                    {
+                        question: "What term describes vowel sounds that change within a word?",
+                        answers: ["Diphthong", "Monophthong", "Reduction", "Elision"],
+                        correct: 0,
+                        explanation: "A diphthong is a single vowel sound that changes quality as it is pronounced, moving from one vowel position to another."
+                    },
+                    {
+                        question: "The IPA symbol for the 'sh' sound in 'shoe' is?",
+                        answers: ["/ʃ/", "/ʒ/", "/θ/", "/ð/"],
+                        correct: 0,
+                        explanation: "The 'sh' sound in 'shoe' is represented by the IPA symbol /ʃ/."
+                    },
+                    {
+                        question: "The consonant /ʤ/ is classified as?",
+                        answers: ["Voiced affricate", "Voiceless plosive", "Nasal", "Fricative"],
+                        correct: 0,
+                        explanation: "/ʤ/ (as in 'judge') is a voiced postalveolar affricate, combining a stop and a fricative with vocal cord vibration."
+                    },
+                    {
+                        question: "Which vowel sound is produced with a high back tongue position?",
+                        answers: ["/u/", "/i/", "/a/", "/e/"],
+                        correct: 0,
+                        explanation: "/u/ (as in 'boot') is a high back vowel, where the tongue is raised high and retracted towards the back of the mouth."
+                    }
+                ]
+            };
+
+            // ====== DOM Elements ======
+            const levelSelect = document.getElementById('quiz-level-select');
+            const questionContainer = document.getElementById('quiz-question');
+            const questionText = document.getElementById('question-text');
+            const answerOptions = document.getElementById('answer-options');
+            const currentQuestionFeedback = document.getElementById('current-question-feedback');
+            const feedbackTitle = currentQuestionFeedback.querySelector('.feedback-title');
+            const feedbackText = currentQuestionFeedback.querySelector('.feedback-text');
+            const nextBtn = document.getElementById('next-question-btn');
+            const quizResult = document.getElementById('quiz-result');
+            const scoreText = document.getElementById('score-text');
+            const restartBtn = document.getElementById('restart-quiz-btn');
+            const reviewQuizBtn = document.getElementById('review-quiz-btn');
+            const quizReviewSection = document.getElementById('quiz-review');
+            const reviewList = document.getElementById('review-list');
+            const backToLevelsFromReviewBtn = document.getElementById('back-to-levels-from-review');
+
+            // Removed elements for Text to IPA Converter
+            // const textInput = document.getElementById('text-input');
+            // const convertToIpaBtn = document.getElementById('convert-to-ipa-btn');
+            // const ipaOutput = document.getElementById('ipa-output');
+            // const ipaMessage = document.getElementById('ipa-message');
+
+
+            // ====== Quiz State ======
+            let currentLevel = null;
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let quizQuestions = [];
+            let incorrectQuestions = [];
+
+            // ====== Start Quiz Function ======
+            function startQuiz(level) {
+                currentLevel = level;
+                quizQuestions = shuffleArray([...quizData[level]]);
+                currentQuestionIndex = 0;
+                score = 0;
+                incorrectQuestions = [];
+
+                levelSelect.classList.add('hidden');
+                quizResult.classList.add('hidden');
+                quizReviewSection.classList.add('hidden');
+                questionContainer.classList.remove('hidden');
+                nextBtn.classList.add('hidden');
+                reviewQuizBtn.classList.add('hidden');
+                currentQuestionFeedback.classList.add('hidden');
+                currentQuestionFeedback.classList.remove('correct-feedback', 'incorrect-feedback');
+
+                showQuestion();
+            }
+
+            // ====== Show Question Function ======
+            function showQuestion() {
+                clearAnswers();
+                nextBtn.classList.add('hidden');
+                currentQuestionFeedback.classList.add('hidden');
+                currentQuestionFeedback.classList.remove('correct-feedback', 'incorrect-feedback');
+
+                const currentQ = quizQuestions[currentQuestionIndex];
+                questionText.textContent = currentQ.question;
+
+                currentQ.answers.forEach((answer, index) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'answer-btn';
+                    btn.textContent = answer;
+                    btn.addEventListener('click', () => selectAnswer(index));
+                    answerOptions.appendChild(btn);
+                });
+            }
+
+            // ====== Clear Answers ======
+            function clearAnswers() {
+                answerOptions.innerHTML = '';
+            }
+
+            // ====== Select Answer ======
+            function selectAnswer(selectedIndex) {
+                const currentQ = quizQuestions[currentQuestionIndex];
+                let isCorrect = (selectedIndex === currentQ.correct);
+
+                // Disable all buttons after answer
+                Array.from(answerOptions.children).forEach((btn, idx) => {
+                    btn.disabled = true;
+                    if (idx === currentQ.correct) {
+                        btn.classList.add('correct');
+                    }
+                    if (idx === selectedIndex && !isCorrect) {
+                        btn.classList.add('wrong');
+                    }
+                });
+
+                if (isCorrect) {
+                    score++;
+                    feedbackTitle.textContent = "Correct!";
+                    feedbackText.textContent = currentQ.explanation;
+                    currentQuestionFeedback.classList.add('correct-feedback');
+                    currentQuestionFeedback.classList.remove('incorrect-feedback');
+                } else {
+                    feedbackTitle.textContent = "Incorrect!";
+                    feedbackText.innerHTML = `The correct answer was: <strong>${currentQ.answers[currentQ.correct]}</strong>. ${currentQ.explanation}`;
+                    currentQuestionFeedback.classList.add('incorrect-feedback');
+                    currentQuestionFeedback.classList.remove('correct-feedback');
+                    incorrectQuestions.push({
+                        question: currentQ.question,
+                        selectedAnswer: currentQ.answers[selectedIndex],
+                        correctAnswer: currentQ.answers[currentQ.correct],
+                        explanation: currentQ.explanation
+                    });
+                }
+                currentQuestionFeedback.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+            }
+
+            // ====== Show Result ======
+            function showResult() {
+                questionContainer.classList.add('hidden');
+                quizResult.classList.remove('hidden');
+                scoreText.textContent = `You scored ${score} out of ${quizQuestions.length}.`;
+
+                if (incorrectQuestions.length > 0) {
+                    reviewQuizBtn.classList.remove('hidden');
+                } else {
+                    reviewQuizBtn.classList.add('hidden');
+                }
+            }
+
+            // ====== Show Review Function (for overall incorrect answers) ======
+            function showReview() {
+                quizResult.classList.add('hidden');
+                quizReviewSection.classList.remove('hidden');
+                reviewList.innerHTML = '';
+
+                if (incorrectQuestions.length === 0) {
+                    reviewList.innerHTML = '<p>Great job! You answered all questions correctly!</p>';
+                    return;
+                }
+
+                incorrectQuestions.forEach((item, index) => {
+                    const reviewItemDiv = document.createElement('div');
+                    reviewItemDiv.className = 'review-item';
+                    reviewItemDiv.innerHTML = `
+                        <p class="question-text"><strong>Question ${index + 1}:</strong> ${item.question}</p>
+                        <p>Your Answer: <span class="your-answer">${item.selectedAnswer}</span></p>
+                        <p>Correct Answer: <span class="correct-answer">${item.correctAnswer}</span></p>
+                        ${item.explanation ? `<p class="explanation"><strong>Explanation:</strong> ${item.explanation}</p>` : ''}
+                    `;
+                    reviewList.appendChild(reviewItemDiv);
+                });
+            }
+
+            // Removed Text to IPA Converter Logic
+            /*
+            convertToIpaBtn.addEventListener('click', async () => {
+                const inputText = textInput.value.trim();
+                ipaOutput.innerHTML = '';
+                ipaMessage.textContent = '';
+
+                if (inputText === "") {
+                    ipaMessage.textContent = "Please enter some text to convert.";
+                    return;
+                }
+
+                ipaMessage.textContent = "Converting... Please wait.";
+                ipaOutput.style.backgroundColor = '#e0f7fa';
+                ipaOutput.style.borderColor = '#81d4fa';
+                ipaOutput.style.color = '#006064';
+
+                try {
+                    let chatHistory = [];
+                    const prompt = `Convert the following English text into its International Phonetic Alphabet (IPA) transcription. Provide only the IPA transcription, enclosed in slashes (e.g., /həˈləʊ/). If a word cannot be transcribed, indicate it as [word N/A]. For sentences, transcribe each word and separate them with a space.
+                    Text: "${inputText}"`;
+
+                    chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                    const payload = { contents: chatHistory };
+                    const apiKey = "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error("Gemini API HTTP Error:", response.status, errorData);
+                        let errorMessage = "An API error occurred.";
+                        if (response.status === 403) {
+                            errorMessage = "API key missing or invalid. If running locally, please add your Gemini API key in the script.";
+                        } else if (errorData && errorData.error && errorData.error.message) {
+                            errorMessage = `API Error: ${errorData.error.message}`;
+                        }
+                        ipaOutput.textContent = "Error during conversion.";
+                        ipaMessage.textContent = errorMessage;
+                        ipaOutput.style.backgroundColor = '#ffebee';
+                        ipaOutput.style.borderColor = '#ef9a9a';
+                        ipaOutput.style.color = '#d32f2f';
+                        return;
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const ipaText = result.candidates[0].content.parts[0].text;
+                        ipaOutput.textContent = ipaText;
+                        ipaMessage.textContent = "Conversion successful!";
+                        ipaOutput.style.backgroundColor = '#e8f5e9';
+                        ipaOutput.style.borderColor = '#a5d6a7';
+                        ipaOutput.style.color = '#2e7d32';
+                    } else {
+                        ipaOutput.textContent = "Could not transcribe the text.";
+                        ipaMessage.textContent = "An error occurred or no IPA could be generated. Please try again.";
+                        ipaOutput.style.backgroundColor = '#ffebee';
+                        ipaOutput.style.borderColor = '#ef9a9a';
+                        ipaOutput.style.color = '#d32f2f';
+                        console.error("Gemini API response structure unexpected:", result);
+                    }
+                } catch (error) {
+                    ipaOutput.textContent = "Error during conversion.";
+                    ipaMessage.textContent = "Failed to connect to the API. Please check your network or try again later.";
+                    ipaOutput.style.backgroundColor = '#ffebee';
+                    ipaOutput.style.borderColor = '#ef9a9a';
+                    ipaOutput.style.color = '#d32f2f';
+                    console.error("Error calling Gemini API:", error);
+                }
+            });
+            */
+
+            // ====== Event Listeners ======
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const selectedLevel = parseInt(btn.dataset.level);
+                    startQuiz(selectedLevel);
+                });
+            });
+
+            nextBtn.addEventListener('click', () => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizQuestions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            });
+
+            restartBtn.addEventListener('click', () => {
+                quizResult.classList.add('hidden');
+                levelSelect.classList.remove('hidden');
+            });
+
+            reviewQuizBtn.addEventListener('click', () => {
+                showReview();
+            });
+
+            backToLevelsFromReviewBtn.addEventListener('click', () => {
+                quizReviewSection.classList.add('hidden');
+                levelSelect.classList.remove('hidden');
+            });
+
+            // Add click listeners to individual example words for sound
+            document.querySelectorAll('.phoneme-example .example-word-clickable').forEach(wordSpan => {
+                wordSpan.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const word = wordSpan.querySelector('.example-word-text')?.textContent.trim() || wordSpan.textContent.trim();
+                    speakText(word);
+                });
+            });
+
+            // Add click listeners to phonetic symbols for sound
+            document.querySelectorAll('.phoneme-symbol').forEach(symbolDiv => {
+                symbolDiv.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const audioSrc = symbolDiv.dataset.audio;
+                    const isPlaceholder = audioSrc && audioSrc.startsWith("URL_AUDIO_");
+
+                    if (audioSrc && !isPlaceholder) {
+                        playAudio(audioSrc);
+                    } else {
+                        const symbol = symbolDiv.firstChild.textContent.trim();
+                        speakText(symbol);
+                    }
+                });
+            });
+
+            // Toggle category description visibility
+            document.querySelectorAll('.consonant-category h3, .vowel-category h3').forEach(heading => {
+                heading.addEventListener('click', () => {
+                    const description = heading.nextElementSibling;
+                    if (description && description.classList.contains('category-description')) {
+                        description.classList.toggle('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
